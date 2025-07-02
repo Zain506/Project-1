@@ -43,7 +43,12 @@ class Perceptron:
         # Complete forward pass
         return (self._forward(x))
 
-    def train(self, df: pd.DataFrame, gt: str, batch_size = 256, lr = 10) -> None:
+    def train(self, 
+              df: pd.DataFrame, 
+              gt: str, 
+              batch_size = 256, 
+              lr = 0.05, 
+              momentum = 0) -> None:
         # Default to stochastic gradient descent
         N = df.shape[0]
 
@@ -62,7 +67,7 @@ class Perceptron:
             # Gradient Descent
             db = deriv.mean()
             dW = np.dot(x_batch.T, deriv) / batch_size # Vector
-            self._gradDescent(dW, db, lr = lr)
+            self._gradDescent(dW, db, lr = lr, m = momentum)
     
     def evaluate(self, df: pd.DataFrame, gt: str) -> float: 
         # Obtain error
@@ -78,13 +83,13 @@ class Perceptron:
         out = self.activation(agg)
         return (out)
     
-    def _gradDescent(self, dW: np.array, db: np.array, lr) -> None:
-        # Vanilla Gradient Descent
-        self.W -= lr * dW
-        self.b -= lr * db
-    
-    def _momentumGradDescent(self, dW: np.array, db: np.array, lr, m = 0.9) -> None:
+    def _gradDescent(self, 
+                    dW: np.array, 
+                    db: np.array, 
+                    lr: float, 
+                    m: float) -> None:
         # Momentum Gradient Descent
+        # Special type of vanilla gradient descent with m = 0
         self.vW = m*self.vW - lr*dW
         self.vb = m*self.vb - lr*db
         self.W += self.vW
