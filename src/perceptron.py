@@ -48,7 +48,8 @@ class Perceptron:
               gt: str, 
               batch_size = 256, 
               lr = 0.05, 
-              momentum = 0) -> None:
+              momentum = 0,
+              dLoss = None) -> None:
         # Default to stochastic gradient descent
         N = df.shape[0]
 
@@ -59,8 +60,8 @@ class Perceptron:
             y_batch = y[i:i+batch_size]
 
             pred = self._forward(x_batch) # Forward pass
-
-            dLoss = 2*(pred - y_batch) # Derivative of loss
+            if dLoss is None:
+                dLoss = 2*(pred - y_batch) # Derivative of loss
             dAct = self.derivative(pred) # Derivative of wTX+b
             deriv = dLoss*dAct # Chain Rule
             
